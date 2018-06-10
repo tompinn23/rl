@@ -28,7 +28,7 @@ matrix:
            - g++-8
            - clang-6.0
      env:
-       - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
+       - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
        
       
       
