@@ -1,4 +1,4 @@
-﻿# CMakeList.txt : CMake project for rlv3, include source and define
+# CMakeList.txt : CMake project for rlv3, include source and define
 # project specific logic here.
 #
 cmake_minimum_required (VERSION 3.8)
@@ -12,7 +12,7 @@ option(USE_LIBC++ "When using clang use libc++" OFF)
 if(MSVC)
 add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
-if(NOT $ENV{TRAVIS)
+if(NOT $ENV{TRAVIS})
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" AND USE_LIBC++)
 	message("Hello")
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++")
