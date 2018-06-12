@@ -3,8 +3,8 @@
 #
 cmake_minimum_required (VERSION 3.8)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED 1)
+# set(CMAKE_CXX_STANDARD 17)
+# set(CMAKE_CXX_STANDARD_REQUIRED 1)
 
 option(USE_LIBC++ "When using clang use libc++" OFF)
 
@@ -64,8 +64,11 @@ add_custom_command(TARGET rlv3 POST_BUILD
         "${CMAKE_SOURCE_DIR}/data"
         $<TARGET_FILE_DIR:rlv3>)
 
-set_target_properties(rl rlv3 PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON)
 
+set_target_properties(rl rlv3 PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON)
+if(MINGW)
+	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static -static-libgcc -static-libstdc++ -lpthread")
+endif()
 
 if(MSVC)
 	get_target_property(LIB_LOCATION BearLibTerminal  IMPORTED_LOCATION)

@@ -4,12 +4,21 @@
 #include <iostream>
 #include <vector>
 #include <new>
+#include "BearLibTerminal.h"
 
 #include "spdlog/spdlog.h"
+
+static bool quitPlease = false;
+
 
 void no_memory()
 {
 	quit("Out of memory!", EXIT_FAILURE);
+}
+
+bool should_quit()
+{
+	return quitPlease;
 }
 
 void init_stuff()
@@ -18,7 +27,38 @@ void init_stuff()
 	spdlog::get("main")->info("Loggging Initialized.");
 	std::set_new_handler(no_memory);
 	spdlog::get("main")->info("New Handler Initialized.");
+	init_signals();
 }
+
+
+#if defined(Windows)
+
+#include <Windows.h>
+
+BOOL WINAPI consoleHandler(_In_ DWORD signal)
+{
+	switch (signal)
+	{
+	case CTRL_C_EVENT:
+		spdlog::get("main")->info("CTRL-C received quitting.");
+		quitPlease = true;
+		return TRUE;
+	default:
+		return FALSE;
+	}
+}
+
+void init_signals()
+{
+	SetConsoleCtrlHandler(consoleHandler, TRUE);
+}
+#elif defined(Linux)
+//TODO: Add linux stuff.
+void init_signals()
+{
+
+}
+#endif
 
 
 void init_logging()
