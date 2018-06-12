@@ -100,7 +100,17 @@ int main(int argc, char* argv[])
 		sum += n.count();
 	}
 	log->info("Average: {}", sum / times.size());*/
-	while (terminal_read() != TK_CLOSE && !should_quit());
+	while (true)
+	{
+		if (terminal::has_input())
+		{
+			if (terminal_read() == TK_CLOSE)
+				break;
+		}
+		if (should_quit())
+			break;
+	}
+	log->flush();
 	terminal_close();
 	return 0; 
 }

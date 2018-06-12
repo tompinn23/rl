@@ -59,7 +59,6 @@ namespace data {
 
 	bool GameData::init_rooms(sol::table table)
 	{
-		auto log = spdlog::get("main");
 		// Loop over all the rooms.
 		for (auto x : table)
 		{
@@ -78,6 +77,11 @@ namespace data {
 	bool GameData::init_data(sol::table table)
 	{
 		return false;
+	}
+
+	rl_room* GameData::get_room(int idx)
+	{
+		return m_rooms.at(idx);
 	}
 
 	void GameData::print_room(int idx)
