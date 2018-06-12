@@ -49,7 +49,7 @@ void Console::init(int width, int height, color_t bk, color_t fg)
 	m_height = height;
 	m_bk = bk;
 	m_fg = fg;
-	m_console.resize(m_width, std::vector<char_t>(m_height, char_t(' ', m_bk, m_fg)));
+	m_console.resize(m_width, std::vector<char_t>(m_height, char_t(' ', m_bk, m_fg)));	
 }
 
 void Console::blit(int destX, int destY, int destX2, int destY2)
@@ -134,18 +134,15 @@ void Console::bkcolor(color_t bk)
 	m_bk = bk;
 }
 
-void Console::color(color_t fg)
-{
-	m_fg = fg;
-}
+	void Console::color(color_t fg)
+	{
+		m_fg = fg;
+	}
 
-char_t Console::get(int x, int y)
-{
-	return at(x, y);
-}
-
-
-
+	char_t Console::get(int x, int y)
+	{
+		return at(x, y);
+	}
 
 
 	void open()
@@ -173,7 +170,7 @@ char_t Console::get(int x, int y)
 		terminal_put(x, y, val);
 	}
 
-	void print(int x, int y, std::string val)
+	void print(int x, int y, const std::string& val)
 	{
 		terminal_print(x, y, val.c_str());
 	}
@@ -189,10 +186,10 @@ char_t Console::get(int x, int y)
 	}
 	color_t read_str(int x, int y, std::string &buffer, int max)
 	{
-		char* buf = new char[max];
+		auto buf = new char[max];
 		color_t size = terminal_read_str(x, y, buf, max);
 		buffer = std::string(buf);
-		delete buf;
+		delete[] buf;
 		return size;
 	}
 

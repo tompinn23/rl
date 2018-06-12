@@ -43,7 +43,21 @@ std::string slurp(std::ifstream& in)
 int main(int argc, char* argv[])
 {
 	terminal::open();
-	terminal::set("window: size=80x50; font: Taffer_10x10.png, size=10x10");
+	terminal::set("window: size=80x50; font: Taffer_10x10.png, size=10x10; log: file=bear.log");
+	terminal::refresh();
+	terminal::delay(100);
+	/*for(int c = 0; c < 6; c++)
+	{
+		terminal_bkcolor(terminal::get_color(255, rand() % 255, rand() % 255, rand() % 255));
+		terminal_color(terminal::get_color(255 , rand() %255, rand() % 255, rand() % 255));
+		for(int i = 0; i < 80; i++)
+			for(int j = 0; j < 50; j++)
+				terminal::put(i, j, 32 + (rand() % 40));
+		terminal_refresh();
+	}*/
+	//terminal_bkcolor(0xFF000000);
+	//terminal_color(0xFFFFFFFF);
+	//terminal_clear();
 	init_stuff();
 	auto log = spdlog::get("main");
 	auto dir = rl_dir("./data");
@@ -52,11 +66,12 @@ int main(int argc, char* argv[])
 	data::init_datafiles(dir, dat);
 	dat.print_room(0);
 	dat.print_room(1);
+	terminal_print(1,1,"heloo world");
+	terminal_put(0, 1, 'C');
+	terminal_put(1, 0, 'c');
 
-	terminal::put(0, 1, 'C');
-	terminal::put(1, 0, 'c');
-
-	terminal::refresh();
+	terminal_refresh();
+	//log->info("Got past the printing why does the terminal not refresh");
 
 	/*time_point<steady_clock> start;
 	time_point<steady_clock> end;

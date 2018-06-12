@@ -15,3 +15,6 @@ target_include_directories(spdlog INTERFACE ./)
 add_library(sol INTERFACE)
 target_include_directories(sol INTERFACE ./sol)
 target_link_libraries(sol INTERFACE libluadll)
+
+add_library(catch INTERFACE)
+target_include_directories(catch INTERFACE ./catch)
