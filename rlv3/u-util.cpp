@@ -71,7 +71,7 @@ void init_logging()
 #else
 		sinks.push_back(std::make_shared<spdlog::sinks::ansicolor_stdout_sink_mt>());
 #endif
-		sinks.push_back(std::make_shared<spdlog::sinks::simple_file_sink_mt>("rlv3.log", ));
+		sinks.push_back(std::make_shared<spdlog::sinks::simple_file_sink_mt>("rlv3.log"));
 		auto console_logger = std::make_shared<spdlog::logger>("console", sinks[0]);
 		auto main_logger = std::make_shared<spdlog::logger>("main", begin(sinks), end(sinks));
 		spdlog::register_logger(console_logger);

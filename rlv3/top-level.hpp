@@ -3,6 +3,8 @@
 
 #include "config.h"
 
+#include <vector>
+
 #if defined(_WIN32)
 #define Windows // Windows
 #elif defined(_WIN64)
