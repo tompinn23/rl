@@ -18,3 +18,10 @@ void Game::input(int key)
 		it->input(key);
 	}
 }
+
+
+void Game::loop()
+{
+
+	terminal::refresh();
+}
