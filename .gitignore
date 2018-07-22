@@ -341,5 +341,5 @@ __pycache__/
 # should be stored in the .pubxml.user file.
 
 cmake-build-*
-
+build*
 # End of https://www.gitignore.io/api/c++,cmake,visualstudio

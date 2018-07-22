@@ -1,17 +1,18 @@
-﻿# CMakeList.txt : Top-level CMake project file, do global configuration
-# and include sub-projects here.
-#
-cmake_minimum_required (VERSION 3.8)
+project(rl C)
 
-project ("rlv3")
+cmake_minimum_required(VERSION 3.10)
 
+if(COMMAND cmake_policy)
+	cmake_policy(SET CMP0003 NEW)
+endif(COMMAND cmake_policy)
 
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY
+    ${CMAKE_BINARY_DIR}/lib CACHE
+    PATH "Directory where all the .lib files are dumped." FORCE)
+SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY
+    ${CMAKE_BINARY_DIR}/bin CACHE
+    PATH "Directory where .exe and .dll files are dumped." FORCE)
 
+add_subdirectory(Dependencies)
+add_subdirectory(Source)
 
-# Include sub-projects.
-add_subdirectory ("rlv3")
-
-add_subdirectory(tests)
