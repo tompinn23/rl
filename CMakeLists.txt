@@ -1,4 +1,4 @@
-project(rl C)
+project(rl)
 
 cmake_minimum_required(VERSION 3.10)
 
