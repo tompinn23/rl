@@ -12,25 +12,38 @@
 #define MAX_LETTER_CODE 255
 
 namespace magma {
+	struct SDLTexDeleter {
+		void operator() (SDL_Texture* tex) const {
+			SDL_DestroyTexture(tex);
+		}
+	};
+
 	class SDLBackend : public Backend {
 	public:
-		static SDLBackend* root;
-		SDLBackend(int width, int height, std::string font, int tile_size);
-		~SDLBackend();
+		static SDLBackend* root = NULL;
+		static SDLBackend* SDLBackend::init_root(int width, int height, std::string font, int tile_size);
+		static SDLBackend* SDLBackend::init(int width, int height);
 		int get_width() { return mWidth; }
 		int get_height() { return mHeight; }
 		void putc(int x, int y, int c);
+		void sub_putc(int pixelX, int pixelY, int c);
 		void print(int x, int y, std::string str);
+		void sub_print(int pixelX, int pixelY, std::string str);
 		void set_fg(int r, int g, int b);
 		void set_bg(int r, int g, int b);
 		void refresh();
+		void blit(Backend* src, int srcX, int srcY, int srcW, int srcH, int dstX, int dstY);
+		virtual BackendType get_type() { return BackendType::SDL; }
 	protected:
+		SDLBackend(int width, int height, std::string font, int tile_size);
+		SDLBackend(int width, int height);
 		std::string mFontFile = "";
 		int mTileSize = 0;
 		std::shared_ptr<std::vector<SDL_Rect>> mFontClips;
-		SDL_Window* mWindow = NULL;
-		SDL_Renderer* mRenderer = NULL;
-		SDL_Texture* mFont = NULL;
+		std::shared_ptr<SDL_Window> mWindow;
+		std::shared_ptr<SDL_Renderer> mRenderer;
+		std::shared_ptr<SDL_Texture> mFont;
+		std::unique_ptr<SDL_Texture, SDLTexDeleter> mConsole;
 		friend class SDLBackend;
 	};
 }

@@ -5,7 +5,36 @@
 
 
 namespace magma {
-	SDLRootBackend::SDLRootBackend(int width, int height, std::string font, int tile_size)
+
+	SDLBackend* SDLBackend::init_root(int width, int height, std::string font, int tile_size)
+	{
+		if (root == NULL)
+		{
+			try {
+				root = new SDLBackend(width, height, font, tile_size);
+			}
+			catch (const std::runtime_error &error)
+			{
+				spdlog::get("main")->error("Failed to create root window: {}", error.what());
+			}
+		}
+		return root;
+	}
+
+	SDLBackend* SDLBackend::init(int width, int height)
+	{
+		try {
+			SDLBackend* con = new SDLBackend(width, height);
+			return con;
+		}
+		catch (const std::runtime_error &error)
+		{
+			spdlog::get("main")->error("Failed to create console window: {}", error.what());
+		}
+		return NULL;
+	}
+
+	SDLBackend::SDLBackend(int width, int height, std::string font, int tile_size)
 	{
 		mLog = spdlog::get("main");
 		mWidth = width;
@@ -16,18 +45,18 @@ namespace magma {
 		{
 			throw std::runtime_error(fmt::format("SDL Couldnt initialize: {}", SDL_GetError()));
 		}
-		mWindow = SDL_CreateWindow("rl", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, mWidth * tile_size, mHeight * tile_size, SDL_WINDOW_SHOWN);
+		mWindow = std::shared_ptr<SDL_Window>(SDL_CreateWindow("rl", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, mWidth * tile_size, mHeight * tile_size, SDL_WINDOW_SHOWN), SDL_DestroyWindow);
 		if(mWindow == NULL)
 		{
 			throw std::runtime_error(fmt::format("SDL Window creation failed with error: {} ", SDL_GetError()));
 		}
-		mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED);
+		mRenderer = std::shared_ptr<SDL_Renderer>(SDL_CreateRenderer(mWindow.get(), -1, SDL_RENDERER_ACCELERATED), SDL_DestroyRenderer);
 		if(mRenderer == NULL)
 		{
 			throw std::runtime_error(fmt::format("SDL Renderer creation failed with error: {}", SDL_GetError()));
 		}
-		SDL_SetRenderDrawColor(mRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-		SDL_SetRenderDrawBlendMode(mRenderer, SDL_BLENDMODE_BLEND);
+		SDL_SetRenderDrawColor(mRenderer.get(), 0xFF, 0xFF, 0xFF, 0xFF);
+		SDL_SetRenderDrawBlendMode(mRenderer.get(), SDL_BLENDMODE_BLEND);
 		SDL_Surface* image;
 		unsigned error;
 		std::vector<unsigned char> imgBuf;
@@ -64,8 +93,8 @@ namespace magma {
 				bufp = (Uint32 *)image->pixels + (y * image->pitch / 4) + x;
 				*bufp = SDL_MapRGBA(image->format, r, g, b, a);
 			}
-		mFont = SDL_CreateTextureFromSurface(mRenderer, image);
-		SDL_SetTextureBlendMode(mFont, SDL_BLENDMODE_BLEND);
+		mFont = std::shared_ptr<SDL_Texture>(SDL_CreateTextureFromSurface(mRenderer.get(), image), SDL_DestroyTexture);
+		SDL_SetTextureBlendMode(mFont.get(), SDL_BLENDMODE_BLEND);
 		mFontClips->resize(MAX_LETTER_CODE + 1);
 		int idx = 0;
 		for(int j = 0; j < (w / tile_size); j++)
@@ -79,32 +108,40 @@ namespace magma {
 		}
 	}
 
-	SDLRootBackend::~SDLRootBackend()
-	{
-		SDL_DestroyTexture(mFont);
-		SDL_DestroyRenderer(mRenderer);
-		SDL_DestroyWindow(mWindow);
-	}
 
-	SDLBackend::SDLBackend(int width, int height, SDLRootBackend* rootWindow)
+
+	SDLBackend::SDLBackend(int width, int height)
 	{
 		mWidth = width;
 		mHeight = height;
-		mRenderer = rootWindow->mRenderer;
-		mTileSize = rootWindow->mTileSize;
-		mConsole = SDL_CreateTexture(mRenderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, mWidth * mTileSize, mHeight * mTileSize);
+		mRenderer = root->mRenderer;
+		mTileSize = root->mTileSize;
+		mFontClips = root->mFontClips;
+		mConsole = std::unique_ptr<SDL_Texture, SDLTexDeleter>(SDL_CreateTexture(mRenderer.get(), SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, mWidth * mTileSize, mHeight * mTileSize));
 		if (mConsole == NULL)
 		{
 			throw std::runtime_error(fmt::format("Console texture could not be created: {}", SDL_GetError()));
 		}
 	}
 
-	void SDLRootBackend::putc(int x, int y, int c)
+	void SDLBackend::putc(int x, int y, int c)
 	{
 		int i = x * mTileSize;
 		int j = y * mTileSize;
-		SDL_Rect renderQuad = { i, j, mTileSize, mTileSize };
-		SDL_RenderFillRect(mRenderer, &renderQuad);
+		sub_putc(i, j, c);
+	}
+
+	void SDLBackend::sub_putc(int pixelX, int pixelY, int c)
+	{
+		if (mConsole == NULL)
+		{
+			SDL_SetRenderTarget(mRenderer.get(), NULL);
+		}
+		else {
+			SDL_SetRenderTarget(mRenderer.get(), mConsole.get());
+		}
+		SDL_Rect renderQuad = { pixelX, pixelY, mTileSize, mTileSize };
+		SDL_RenderFillRect(mRenderer.get(), &renderQuad);
 		//printf("Index / Char: %d / %c", c);
 		//printf("Source: X: %d Y: %d X2: %d Y2: %d", scr->font_clips[c].x, scr->font_clips[c].y, scr->font_clips[c].x + scr->tile_width, scr->font_clips[c].y + scr->tile_height);
 		//printf("Destination: X: %d Y: %d X2: %d Y2: %d", i, j, i + scr->tile_width, j + scr->tile_height);
@@ -112,14 +149,10 @@ namespace magma {
 		{
 			c = MAX_LETTER_CODE;
 		}
-		SDL_RenderCopy(mRenderer, mFont, &(*mFontClips)[c], &renderQuad);
+		SDL_RenderCopy(mRenderer.get(), mFont.get(), &(*mFontClips)[c], &renderQuad);
 	}
 
-	void sub_putc(int pixelX, int pixelY, int c)
-	{
-	}
-
-	void SDLRootBackend::print(int x, int y, std::string str)
+	void SDLBackend::print(int x, int y, std::string str)
 	{
 		for (int i = 0; i < str.length(); i++)
 		{
@@ -127,22 +160,45 @@ namespace magma {
 		}
 	}
 
-	void sub_print(int pixelX, int pixelY, int c)
+	void SDLBackend::sub_print(int pixelX, int pixelY, std::string str)
 	{
+		for (int i = 0; i < str.length(); i++)
+		{
+			sub_putc(pixelX + i, pixelY, str[i]);
+		}
 	}
 
-	void SDLRootBackend::set_bg(int r, int g, int b)
+	void SDLBackend::set_bg(int r, int g, int b)
 	{
-		SDL_SetRenderDrawColor(mRenderer, r, g, b, 255);
+		SDL_SetRenderDrawColor(mRenderer.get(), r, g, b, 255);
 	}
 
-	void SDLRootBackend::set_fg(int r, int g, int b)
+	void SDLBackend::set_fg(int r, int g, int b)
 	{
-		SDL_SetTextureColorMod(mFont, r, g, b);
+		SDL_SetTextureColorMod(mFont.get(), r, g, b);
 	}
 
-	void SDLRootBackend::refresh()
+	void SDLBackend::refresh()
 	{
-		SDL_RenderPresent(mRenderer);
+		SDL_RenderPresent(mRenderer.get());
+	}
+
+	void SDLBackend::blit(Backend* src, int srcX, int srcY, int srcW, int srcH, int dstX, int dstY)
+	{
+		if (src->get_type() == BackendType::SDL)
+		{
+			SDLBackend* sdl_src = dynamic_cast<SDLBackend*>(src);
+			if (mConsole == NULL)
+			{
+				SDL_SetRenderTarget(mRenderer.get(), NULL);
+			}
+			else {
+				SDL_SetRenderTarget(mRenderer.get(), mConsole.get());
+			}
+			SDL_Rect srcQuad = { srcX, srcY, srcW, srcH };
+			SDL_Rect dstQuad = { dstX, dstY, srcW, srcH };
+			SDL_RenderCopy(mRenderer.get(), sdl_src->mConsole.get(), &srcQuad, &dstQuad);
+		}
+
 	}
 }
