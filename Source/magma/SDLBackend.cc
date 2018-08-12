@@ -5,6 +5,7 @@
 
 
 namespace magma {
+	SDLBackend* SDLBackend::root = NULL;
 
 	SDLBackend* SDLBackend::init_root(int width, int height, std::string font, int tile_size)
 	{
@@ -41,16 +42,12 @@ namespace magma {
 		mHeight = height;
 		mFontFile = font;
 		mTileSize = tile_size;
-		if (SDL_Init(SDL_INIT_VIDEO) < 0)
-		{
-			throw std::runtime_error(fmt::format("SDL Couldnt initialize: {}", SDL_GetError()));
-		}
 		mWindow = std::shared_ptr<SDL_Window>(SDL_CreateWindow("rl", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, mWidth * tile_size, mHeight * tile_size, SDL_WINDOW_SHOWN), SDL_DestroyWindow);
 		if(mWindow == NULL)
 		{
 			throw std::runtime_error(fmt::format("SDL Window creation failed with error: {} ", SDL_GetError()));
 		}
-		mRenderer = std::shared_ptr<SDL_Renderer>(SDL_CreateRenderer(mWindow.get(), -1, SDL_RENDERER_ACCELERATED), SDL_DestroyRenderer);
+		mRenderer = std::shared_ptr<SDL_Renderer>(SDL_CreateRenderer(mWindow.get(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC), SDL_DestroyRenderer);
 		if(mRenderer == NULL)
 		{
 			throw std::runtime_error(fmt::format("SDL Renderer creation failed with error: {}", SDL_GetError()));
@@ -95,7 +92,7 @@ namespace magma {
 			}
 		mFont = std::shared_ptr<SDL_Texture>(SDL_CreateTextureFromSurface(mRenderer.get(), image), SDL_DestroyTexture);
 		SDL_SetTextureBlendMode(mFont.get(), SDL_BLENDMODE_BLEND);
-		mFontClips->resize(MAX_LETTER_CODE + 1);
+		mFontClips.resize(MAX_LETTER_CODE + 1);
 		int idx = 0;
 		for(int j = 0; j < (w / tile_size); j++)
 		for (int i = 0; i < (h / tile_size); i++)
@@ -103,9 +100,11 @@ namespace magma {
 			int x = i * tile_size;
 			int y = j * tile_size;
 			SDL_Rect renderQuad = { x, y, tile_size, tile_size };
-			(*mFontClips)[idx] = renderQuad;
+			mFontClips[idx] = renderQuad;
 			idx++;
 		}
+		set_fg(255, 255, 255);
+		set_bg(0, 0, 0);
 	}
 
 
@@ -117,6 +116,7 @@ namespace magma {
 		mRenderer = root->mRenderer;
 		mTileSize = root->mTileSize;
 		mFontClips = root->mFontClips;
+		mFont = root->mFont;
 		mConsole = std::unique_ptr<SDL_Texture, SDLTexDeleter>(SDL_CreateTexture(mRenderer.get(), SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, mWidth * mTileSize, mHeight * mTileSize));
 		if (mConsole == NULL)
 		{
@@ -149,7 +149,7 @@ namespace magma {
 		{
 			c = MAX_LETTER_CODE;
 		}
-		SDL_RenderCopy(mRenderer.get(), mFont.get(), &(*mFontClips)[c], &renderQuad);
+		SDL_RenderCopy(mRenderer.get(), mFont.get(), &mFontClips[c], &renderQuad);
 	}
 
 	void SDLBackend::print(int x, int y, std::string str)
@@ -181,6 +181,19 @@ namespace magma {
 	void SDLBackend::refresh()
 	{
 		SDL_RenderPresent(mRenderer.get());
+		//SDL_RenderClear(mRenderer.get());
+	}
+
+	void SDLBackend::clear()
+	{
+		if (mConsole == NULL)
+		{
+			SDL_SetRenderTarget(mRenderer.get(), NULL);
+		}
+		else {
+			SDL_SetRenderTarget(mRenderer.get(), mConsole.get());
+		}
+		SDL_RenderClear(mRenderer.get());
 	}
 
 	void SDLBackend::blit(Backend* src, int srcX, int srcY, int srcW, int srcH, int dstX, int dstY)
@@ -195,10 +208,9 @@ namespace magma {
 			else {
 				SDL_SetRenderTarget(mRenderer.get(), mConsole.get());
 			}
-			SDL_Rect srcQuad = { srcX, srcY, srcW, srcH };
-			SDL_Rect dstQuad = { dstX, dstY, srcW, srcH };
+			SDL_Rect srcQuad = { srcX, srcY, srcW * mTileSize, srcH * mTileSize };
+			SDL_Rect dstQuad = { dstX * mTileSize, dstY * mTileSize, srcW * mTileSize, srcH * mTileSize };
 			SDL_RenderCopy(mRenderer.get(), sdl_src->mConsole.get(), &srcQuad, &dstQuad);
 		}
-
 	}
 }

@@ -6,6 +6,7 @@ namespace magma {
 
 	enum class BackendType {
 		ABSTRACT,
+		MEMORY,
 		SDL
 	};
 
@@ -19,6 +20,7 @@ namespace magma {
 			virtual void set_fg(int r, int g, int b) = 0;
 			virtual void set_bg(int r, int g, int b) = 0;
 			virtual void refresh() = 0;
+			virtual void clear() = 0;
 			virtual void blit(Backend* src, int srcX, int srcY, int srcW, int srcH, int dstX, int dstY) = 0;
 			virtual BackendType get_type() { return BackendType::ABSTRACT; }
 		protected:

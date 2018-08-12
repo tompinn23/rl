@@ -20,7 +20,7 @@ namespace magma {
 
 	class SDLBackend : public Backend {
 	public:
-		static SDLBackend* root = NULL;
+		static SDLBackend* root;
 		static SDLBackend* SDLBackend::init_root(int width, int height, std::string font, int tile_size);
 		static SDLBackend* SDLBackend::init(int width, int height);
 		int get_width() { return mWidth; }
@@ -32,6 +32,7 @@ namespace magma {
 		void set_fg(int r, int g, int b);
 		void set_bg(int r, int g, int b);
 		void refresh();
+		void clear();
 		void blit(Backend* src, int srcX, int srcY, int srcW, int srcH, int dstX, int dstY);
 		virtual BackendType get_type() { return BackendType::SDL; }
 	protected:
@@ -39,7 +40,7 @@ namespace magma {
 		SDLBackend(int width, int height);
 		std::string mFontFile = "";
 		int mTileSize = 0;
-		std::shared_ptr<std::vector<SDL_Rect>> mFontClips;
+		std::vector<SDL_Rect> mFontClips;
 		std::shared_ptr<SDL_Window> mWindow;
 		std::shared_ptr<SDL_Renderer> mRenderer;
 		std::shared_ptr<SDL_Texture> mFont;
