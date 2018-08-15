@@ -1,4 +1,4 @@
-add_executable(rl main.cc)
+add_executable(rl main.cc generate/PerlinNoise.cpp generate/generate.cpp)
 target_include_directories(rl PUBLIC ${CMAKE_SOURCE_DIR}/Dependencies/sdl2/include)
 
 add_subdirectory(magma)

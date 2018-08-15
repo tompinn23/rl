@@ -47,7 +47,7 @@ namespace magma {
 		{
 			throw std::runtime_error(fmt::format("SDL Window creation failed with error: {} ", SDL_GetError()));
 		}
-		mRenderer = std::shared_ptr<SDL_Renderer>(SDL_CreateRenderer(mWindow.get(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC), SDL_DestroyRenderer);
+		mRenderer = std::shared_ptr<SDL_Renderer>(SDL_CreateRenderer(mWindow.get(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE), SDL_DestroyRenderer);
 		if(mRenderer == NULL)
 		{
 			throw std::runtime_error(fmt::format("SDL Renderer creation failed with error: {}", SDL_GetError()));
