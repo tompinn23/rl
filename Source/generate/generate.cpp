@@ -1,5 +1,7 @@
 #include "generate.h"
 
+#include <iostream>
+
 Map::Map(int width, int height, int seed)
 {
 	mWidth = width;
@@ -29,7 +31,7 @@ void Map::generate_heightmap()
 		for (int j = 0; j < mHeight; j++)
 		{
 			heightmap[i][j] = hn.noise(freq *(i), freq *(j), z_val) + 0.5 * hn.noise(2 * freq *(i), 2 * freq *(j), z_val);
-
+			//std::cout << heightmap[i][j];
 		}
 	}
 }

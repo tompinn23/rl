@@ -3,21 +3,6 @@
 #include <vector>
 #include "PerlinNoise.h"
 
-enum class Tile {
-	WATER,
-	DIRT,
-	SAND,
-	ROCK
-};
-
-enum class Biome {
-	OCEAN,
-	MOUNTAINS,
-	GRASSLAND,
-	DESERT,
-	BEACH,
-	RIVER,
-};
 
 class Map {
 
@@ -31,7 +16,7 @@ private:
 	PerlinNoise mn; // Moisturemap noise
 
 	// Map gen constants;
-	const double freq = 0.04;
+	const double freq = 0.04 ;
 	const double z_val = 0.5;
 
 public:
