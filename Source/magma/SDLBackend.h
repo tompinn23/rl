@@ -21,8 +21,8 @@ namespace magma {
 	class SDLBackend : public Backend {
 	public:
 		static SDLBackend* root;
-		static SDLBackend* SDLBackend::init_root(int width, int height, std::string font, int tile_size);
-		static SDLBackend* SDLBackend::init(int width, int height);
+		static SDLBackend* init_root(int width, int height, std::string font, int tile_size);
+		static SDLBackend* init(int width, int height);
 		int get_width() { return mWidth; }
 		int get_height() { return mHeight; }
 		void putc(int x, int y, int c);
@@ -45,6 +45,5 @@ namespace magma {
 		std::shared_ptr<SDL_Renderer> mRenderer;
 		std::shared_ptr<SDL_Texture> mFont;
 		std::unique_ptr<SDL_Texture, SDLTexDeleter> mConsole;
-		friend class SDLBackend;
 	};
 }

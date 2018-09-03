@@ -30,6 +30,16 @@ void LuaData::addRoom(sol::table room)
 	sRoom->name = room.get<std::string>("name");
 	sRoom->width = room.get<int>("width");
 	sRoom->height = room.get<int>("height");
+	sRoom->colour_map.resize(sRoom->width);
+	sRoom->tile_map.resize(sRoom->width);
+	for(auto &a : sRoom->colour_map)
+	{
+		a.resize(sRoom->height);
+	}
+	for(auto &a: sRoom->tile_map)
+	{
+		a.resize(sRoom->height);
+	}
 	if (room.get<bool>("csv"))
 	{
 		std::ifstream data;
@@ -104,7 +114,6 @@ void LuaData::addRoom(sol::table room)
 	{
 		//log->info(height * width);
 		sol::table plan = room.get<sol::table>("plan");
-		sRoom->tile_map.resize(sRoom->height * sRoom->width);
 		for (int j = 1; j <= sRoom->height; j++)
 		{
 			//log->info(j);
