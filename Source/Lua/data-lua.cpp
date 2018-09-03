@@ -4,6 +4,9 @@
 #include <fstream>
 #include <sstream>
 
+typedef std::vector<std::vector<int>> TileMap;
+typedef std::vector<std::vector<ColourPair>> ColourMap;
+
 bool stoint(int &i, char const *s, int base = 0)
 {
 	char *end;
@@ -23,6 +26,75 @@ bool stoint(int &i, char const *s, int base = 0)
 	return true;
 }
 
+void parse_csv(std::string path, TileMap& tile_map, ColourMap& colour_map)
+{
+	auto log = spdlog::get("main");
+	std::ifstream data;
+	std::string line;
+	data.open(path);
+	if (!data.is_open())
+		log->error("Failed to open file \"{}\": {}", path, strerror(errno));
+	int lNo = 0;
+	while (getline(data, line)) {
+		// Comment
+		if (line[0] == '#')
+			continue;
+		else {
+			std::stringstream ss(line);
+			std::vector<std::string> result;
+			while (ss.good())
+			{
+				std::string substr;
+				std::getline(ss, substr, ',');
+				result.push_back(substr);
+			}
+			int x = 0;
+			int y = 0;
+			int c = 0;
+			if (!stoint(x, result[0].c_str()))
+			{
+				log->error("Failed to parse X value at line: {}, file: {}", lNo, path);
+			}
+			if (!stoint(y, result[1].c_str()))
+			{
+				log->error("Failed to parse Y value at line: {}, file: {}", lNo, path);
+			}
+			if (!stoint(c, result[2].c_str()))
+			{
+				log->error("Failed to parse character value at line: {}, file: {}", lNo, path);
+			}
+			std::string fgcolour = result[3];
+			std::string bgcolour = result[4];
+			fgcolour = fgcolour.erase(0, 1);
+			bgcolour = bgcolour.erase(0, 1);
+			int fr, fg, fb, br, bg, bb;
+			bool fail = true;
+			fail = stoint(fr, fgcolour.substr(0, 2).c_str(), 16);
+			fail = stoint(fg, fgcolour.substr(0, 2).c_str(), 16);
+			fail = stoint(fb, fgcolour.substr(0, 2).c_str(), 16);
+			if (!fail)
+			{
+				log->error("Failed to parse hex value at line: {}, file: {}", lNo, path);
+			}
+			uint32_t fore = fr << 24 | fg << 16 | fb << 8 | 255;
+			fail = true;
+			fail = stoint(br, bgcolour.substr(0, 2).c_str(), 16);
+			fail = stoint(bg, bgcolour.substr(0, 2).c_str(), 16);
+			fail = stoint(bb, bgcolour.substr(0, 2).c_str(), 16);
+			if (!fail)
+			{
+				log->error("Failed to parse hex value at line: {}, file: {}", lNo, path);
+			}
+			uint32_t back = br << 24 | bg << 16 | bb << 8 | 255;
+			tile_map[x][y] = c;
+			colour_map[x][y] = { fore, back };
+		}
+		lNo++;
+	}
+	if (data.bad())
+		log->error("Error while reading file \"{}\": {}", path, strerror(errno));
+	data.close();
+}
 
 void LuaData::addRoom(sol::table room)
 {
@@ -30,6 +102,7 @@ void LuaData::addRoom(sol::table room)
 	sRoom->name = room.get<std::string>("name");
 	sRoom->width = room.get<int>("width");
 	sRoom->height = room.get<int>("height");
+
 	sRoom->colour_map.resize(sRoom->width);
 	sRoom->tile_map.resize(sRoom->width);
 	for(auto &a : sRoom->colour_map)
@@ -41,74 +114,9 @@ void LuaData::addRoom(sol::table room)
 		a.resize(sRoom->height);
 	}
 	if (room.get<bool>("csv"))
-	{
-		std::ifstream data;
-		std::string line;
-		std::string working_dir = "";
-		std::string path = "./map.csv";
-		data.open(working_dir + path);
-		if (!data.is_open())
-			log->error("Failed to open file \"{}\": {}", working_dir + path, strerror(errno));
-		int lNo = 0;
-		while (getline(data, line)) {
-			// Comment
-			if (line[0] == '#')
-				continue;
-			else {
-				std::stringstream ss(line);
-				std::vector<std::string> result;
-				while (ss.good())
-				{
-					std::string substr;
-					std::getline(ss, substr, ',');
-					result.push_back(substr);
-				}
-				int x = 0;
-				int y = 0;
-				int c = 0;
-				if (!stoint(x, result[0].c_str()))
-				{
-					log->error("Failed to parse X value at line: {}, file: {}", lNo, working_dir + path);
-				}
-				if (!stoint(y, result[1].c_str()))
-				{
-					log->error("Failed to parse Y value at line: {}, file: {}", lNo, working_dir + path);
-				}
-				if (!stoint(c, result[2].c_str()))
-				{
-					log->error("Failed to parse character value at line: {}, file: {}", lNo, working_dir + path);
-				}
-				std::string fgcolour = result[3];
-				std::string bgcolour = result[4];
-				fgcolour = fgcolour.erase(0, 1);
-				bgcolour = bgcolour.erase(0, 1);
-				int fr, fg, fb, br, bg, bb;
-				bool fail = true;
-				fail = stoint(fr, fgcolour.substr(0, 2).c_str(), 16);
-				fail = stoint(fg, fgcolour.substr(0, 2).c_str(), 16);
-				fail = stoint(fb, fgcolour.substr(0, 2).c_str(), 16);
-				if (!fail)
-				{
-					log->error("Failed to parse hex value at line: {}, file: {}", lNo, working_dir + path);
-				}
-				uint32_t fore = fr << 24 | fg << 16 | fb << 8 | 255;
-				fail = true;
-				fail = stoint(br, bgcolour.substr(0, 2).c_str(), 16);
-				fail = stoint(bg, bgcolour.substr(0, 2).c_str(), 16);
-				fail = stoint(bb, bgcolour.substr(0, 2).c_str(), 16);
-				if (!fail)
-				{
-					log->error("Failed to parse hex value at line: {}, file: {}", lNo, working_dir + path);
-				}
-				uint32_t back = br << 24 | bg << 16 | bb << 8 | 255;
-				sRoom->tile_map[x][y] = c;
-				sRoom->colour_map[x][y] = { fore, back };
-			}
-			lNo++;
-		}
-		if (data.bad())
-			log->error("Error while reading file \"{}\": {}", working_dir + path, strerror(errno));
-		data.close();
+	{		
+		std::string path = room.get<std::string>("map-data");
+		parse_csv(working_dir + path, sRoom->tile_map, sRoom->colour_map);
 	}
 	else
 	{

@@ -9,6 +9,13 @@ enum class Tile {
 	WOODEN_WALL,
 };
 
+enum class RoomFlags {
+	Wooden_Wall,
+	Wooden_Floor,
+	Stone_Wall,
+	Stone_Floor
+};
+
 enum class Biome {
 	OCEAN,
 	MOUNTAINS,
