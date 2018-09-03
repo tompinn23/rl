@@ -2,7 +2,7 @@
 
 #include <vector>
 #include "PerlinNoise.h"
-
+#include "enums.h"
 
 class Map {
 

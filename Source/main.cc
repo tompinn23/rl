@@ -2,6 +2,9 @@
 #include <iostream>
 #include <chrono>
 #include <bitset>
+#include <fstream>
+#include <sstream>
+
 //Using SDL and standard IO
 #define SDL_MAIN_HANDLED
 #include "SDL.h"
@@ -11,6 +14,7 @@
 
 #include "magma/Console.h"
 #include "generate/generate.h"
+#include "generate/enums.h"
 
 using magma::Console;
 
@@ -43,6 +47,8 @@ void init_logging()
 	}
 }
 
+bool stoint(int &i, char const *s, int base = 0);
+
 
 int main(int argc, char* argv[])
 {
@@ -60,6 +66,18 @@ int main(int argc, char* argv[])
 		SDL_GetRenderDriverInfo(i, &info);
 		log->info("Driver: {} is {}", i, info.name);
 	}
+
+
+
+
+
+
+
+
+
+
+
+
 
 	const Uint8* state = SDL_GetKeyboardState(NULL);
 	int modX = 0;

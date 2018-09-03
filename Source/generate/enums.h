@@ -4,7 +4,9 @@ enum class Tile {
 	WATER,
 	DIRT,
 	SAND,
-	ROCK
+	ROCK,
+	WOODEN_FLOOR,
+	WOODEN_WALL,
 };
 
 enum class Biome {

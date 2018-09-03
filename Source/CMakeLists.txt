@@ -1,9 +1,9 @@
-add_executable(rl main.cc generate/PerlinNoise.cpp generate/generate.cpp)
+add_executable(rl main.cc GameRegistry.cpp generate/PerlinNoise.cpp generate/generate.cpp generate/data.cpp Lua/data-lua.cpp Lua/game-lua.cpp)
 target_include_directories(rl PUBLIC ${CMAKE_SOURCE_DIR}/Dependencies/sdl2/include)
 
 add_subdirectory(magma)
 
-target_link_libraries(rl magma)
+target_link_libraries(rl magma sol)
 
 add_custom_command(TARGET rl POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory

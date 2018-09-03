@@ -3,3 +3,8 @@ add_subdirectory(lodepng)
 add_subdirectory(spdlog)
 add_subdirectory(fmt)
 add_subdirectory(json)
+add_subdirectory(lua)
+
+add_library(sol INTERFACE)
+target_include_directories(sol INTERFACE ./sol)
+target_link_libraries(sol INTERFACE libluadll)
