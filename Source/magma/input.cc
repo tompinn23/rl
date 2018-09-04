@@ -3,7 +3,7 @@
 namespace magma {
 
 	CommandDef::CommandDef(commands cmd, std::string name, bool iskb, SDL_Keycode key, bool pressed, bool shift, bool ctrl, bool alt, bool cpslk) :
-		cmd(cmd), name(name), iskb(iskb) key(key), pressed(pressed), shift(shift), ctrl(ctrl), alt(alt), cpslk(cpslk)
+		cmd(cmd), name(name), iskb(iskb), key(key), pressed(pressed), shift(shift), ctrl(ctrl), alt(alt), cpslk(cpslk)
 	{
 	}
 
@@ -101,7 +101,7 @@ namespace magma {
 					to_be_processed_names.push(it->second.getName());
 				}
 			}
-		}
+		
 		}
 	}
 

@@ -148,7 +148,7 @@ namespace magma {
 		commands cmd;
 		std::string name;
 		SDL_Keycode key;
-		bool shift, ctrl, alt, cpslk, pressed;
+		bool iskb, shift, ctrl, alt, cpslk, pressed;
 	};
 
 	class CommandManager {
@@ -164,7 +164,7 @@ namespace magma {
 		void checkCommand(Uint32 type, SDL_Event& evt);
 		void updateMouse(int x, int y);
 	private:
-		inputDomains singleDomainData = INPUT_INVALID_DOMAIN;
+		inputDomains singleDomainData = INPUT_DOMAIN_INVALID;
 		std::set<inputDomains> activeDomains;
 		std::stack<std::string> to_be_processed_names;
 		std::stack<commands> to_be_processed;
