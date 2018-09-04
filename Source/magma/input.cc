@@ -76,7 +76,7 @@ namespace magma {
 			alt = true;
 		if (KMOD_CAPS & evt.key.keysym.mod)
 			caps = true;
-		if (singleDomainData != INPUT_DOMAIN_INVALID)
+		if (singleDomainData == INPUT_DOMAIN_INVALID)
 		{
 			for (auto& domain : activeDomains)
 			{
