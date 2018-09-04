@@ -24,3 +24,4 @@ enum class Biome {
 	BEACH,
 	RIVER,
 };
+

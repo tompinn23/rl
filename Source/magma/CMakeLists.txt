@@ -1,4 +1,4 @@
-add_library(magma Backend.cc Console.cc SDLBackend.cc)
+add_library(magma Backend.cc Console.cc SDLBackend.cc input.cc)
 target_include_directories(magma PUBLIC .)
 target_include_directories(magma PUBLIC ${CMAKE_SOURCE_DIR}/Dependencies/sdl2/include)
 

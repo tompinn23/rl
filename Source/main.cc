@@ -13,11 +13,12 @@
 #include "platform.h"
 
 #include "magma/Console.h"
+#include "magma/input.h"
 #include "generate/generate.h"
 #include "generate/enums.h"
 
 using magma::Console;
-
+using magma::CommandManager;
 
 
 void init_logging()
@@ -66,9 +67,18 @@ int main(int argc, char* argv[])
 		SDL_GetRenderDriverInfo(i, &info);
 		log->info("Driver: {} is {}", i, info.name);
 	}
+	CommandManager rlCommands = CommandManager();
+	//					  INPUT DOMAIN				   COMMAND DEFINITION                 COMMAND	    NAME(uniq)		IS KB		KEYCODE		PRESSED,SHIFT,CTRL,ALT,CAPS	
+	rlCommands.addCommand(magma::INPUT_DOMAIN_DEFAULT, magma::CommandDef(magma::commands::CMD_MOVE_E,	"move_e",		true ,		SDLK_RIGHT,	true ,false,false,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_DEFAULT, magma::CommandDef(magma::commands::CMD_MOVE_E,	"move_e2",		true ,		SDLK_d,		true ,false,false,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_DEFAULT, magma::CommandDef(magma::commands::CMD_MOVE_N,	"move_n",		true ,		SDLK_UP,	true ,false,false,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_DEFAULT, magma::CommandDef(magma::commands::CMD_MOVE_W,	"move_w",		true ,		SDLK_a,		true ,false,false,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(magma::commands::CMD_A_K,		"text_a",		true ,		SDLK_a,		true ,true ,false,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(magma::commands::CMD_A_K,		"text_a_cap",	true ,		SDLK_a,		true ,false,false,false,true ));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(magma::commands::CMD_a_K,		"text_a_low",	true ,		SDLK_a,		true ,false,false,false,false));
 
 
-
+	log->info("{}", sizeof(magma::inputDomains));
 
 
 
@@ -88,6 +98,8 @@ int main(int argc, char* argv[])
 	map.assign_biomes();
 	int rWidth = 80;
 	int rHeight = 40;
+	rlCommands.activateDomain(magma::INPUT_DOMAIN_DEFAULT);
+	rlCommands.activateDomain(magma::INPUT_DOMAIN_TEXTBOX);
 	while (true)
 	{
 		for (int x = 0; x < rWidth; x++)
@@ -126,39 +138,30 @@ int main(int argc, char* argv[])
 			}
 		}
 		
+		magma::commands cmd;
+		std::string name;
+		while (rlCommands.getCommand(cmd, name))
+		{
+			log->info("Command name: {}", name);
+		}
+
+
 		root->refresh();
 		root->clear();
 
-		if (state[SDL_SCANCODE_ESCAPE])
-			break;
-		if (state[SDL_SCANCODE_DOWN])
-			rHeight++;
-		if (state[SDL_SCANCODE_RIGHT])
-			rWidth++;
-		if (state[SDL_SCANCODE_UP])
-			rHeight--;
-		if (state[SDL_SCANCODE_LEFT])
-			rWidth--;
-		if (state[SDL_SCANCODE_A])
+		SDL_Event event;
+		while (SDL_PollEvent(&event))
 		{
-			modX -= 1;
+			switch (event.type)
+			{
+			case SDL_KEYDOWN:
+			case SDL_KEYUP:
+				rlCommands.checkCommand(event.type, event);
+				break;
+			case SDL_QUIT:
+				exit(0);
+			}
 		}
-		if (state[SDL_SCANCODE_D])
-		{
-			modX += 1;
-		}
-		if (state[SDL_SCANCODE_W])
-		{
-			modY -= 1;
-		}
-		if (state[SDL_SCANCODE_S])
-		{
-			modY += 1;
-		}
-
-
-
-		SDL_PumpEvents();
 
 	}
 	return 0;
