@@ -125,6 +125,8 @@ namespace magma {
 		CMD_PIPE_K,
 		CMD_R_BRACKET_K,
 		CMD_TILDA_K = 126,
+		CMD_BACKSPACE,
+		CMD_ENTER,
 		CMD_MOVE_N,
 		CMD_MOVE_E,
 		CMD_MOVE_NE,
