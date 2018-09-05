@@ -9,7 +9,7 @@ namespace magma {
 
 	bool CommandDef::same_activator(SDL_Keycode o_key, bool o_pressed, bool o_shift, bool o_ctrl, bool o_alt, bool o_cpslk)
 	{
-		return o_key == key && o_pressed == pressed && o_shift == shift && o_alt == alt && o_cpslk == cpslk;
+		return o_key == key && o_pressed == pressed && o_shift == shift && o_ctrl == ctrl && o_alt == alt && o_cpslk == cpslk;
 	}
 
 	CommandManager::CommandManager()

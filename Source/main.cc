@@ -99,6 +99,40 @@ int main(int argc, char* argv[])
 	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_2_K,			"txt_2",	true ,	SDLK_2,			true ,false,false,false,false));
 	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_3_K,			"txt_3",	true ,	SDLK_3,			true ,false,false,false,false));
 	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_4_K,			"txt_4",	true ,	SDLK_4,			true ,false,false,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_5_K,			"txt_5",	true ,	SDLK_5,			true ,false,false,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_6_K,			"txt_6",	true ,	SDLK_6,			true ,false,false,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_7_K,			"txt_7",	true ,	SDLK_7,			true ,false,false,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_8_K,			"txt_8",	true ,	SDLK_8,			true ,false,false,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_9_K,			"txt_9",	true ,	SDLK_9,			true ,false,false,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_COLON_K,		"txt_:",	true ,	SDLK_SEMICOLON,	true ,true ,false,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_SEMICOLON_K,	"txt_;",	true ,	SDLK_SEMICOLON, true ,false,false,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_LT_K,			"txt_<",	true ,	SDLK_COMMA,		true ,true ,false,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_EQUALS_K,		"txt_=",	true ,	SDLK_EQUALS,	true ,false,false,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_GT_K,			"txt_>",	true ,	SDLK_PERIOD,	true ,true ,false,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_QUESTION_K,	"txt_?",	true ,	SDLK_SLASH,		true ,false,false,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_AT_K,			"txt_@",	true ,	SDLK_QUOTE,		true ,true ,false,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_A_K,			"txt_A",	true ,	SDLK_a,			true ,true ,false,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_A_K,			"txt_A_cap",true ,	SDLK_a,			true ,false,false,false,true ));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_a_K,			"txt_a",	true ,	SDLK_a,			true ,false,false,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_B_K,			"txt_B",	true ,	SDLK_b,			true ,true ,false,false,false));			
+	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_B_K,			"txt_B_cap",true ,	SDLK_b,			true ,false,false,false,true ));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_b_K,			"txt_b",	true ,	SDLK_b,			true ,false,false,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_C_K,			"txt_C",	true ,	SDLK_c,			true ,true ,false,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_C_K,			"txt_C_cap",true ,	SDLK_c,			true ,false,false,false,true ));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_c_K,			"txt_c",	true ,	SDLK_c,			true ,false,false,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_D_K,			"txt_D",	true ,	SDLK_d,			true ,true ,false,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_D_K,			"txt_D_cap",true ,	SDLK_d,			true ,false,false,false,true ));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_d_K,			"txt_d",	true ,	SDLK_d,			true ,false,false,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_E_K,			"txt_E",	true ,	SDLK_e,			true ,true ,false,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_E_K,			"txt_E_cap",true ,	SDLK_e,			true ,false,false,false,true ));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_e_K,			"txt_e",	true ,	SDLK_e,			true ,false,false,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_F_K,			"txt_F",	true ,	SDLK_f,			true ,true ,false,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_F_K,			"txt_F_cap",true ,	SDLK_f,			true ,false,false,false,true ));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_f_K,			"txt_f",	true ,	SDLK_f,			true ,false,false,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_G_K,			"txt_G",	true ,	SDLK_g,			true ,true ,false,false,false));
+
+
+
 
 
 
