@@ -31,7 +31,7 @@ void init_logging()
 #else
 		sinks.push_back(std::make_shared<spdlog::sinks::ansicolor_stdout_sink_mt>());
 #endif
-		sinks.push_back(std::make_shared<spdlog::sinks::simple_file_sink_mt>("rlk3.log"));
+		sinks.push_back(std::make_shared<spdlog::sinks::simple_file_sink_mt>("rlv3.log"));
 		auto console_logger = std::make_shared<spdlog::logger>("console", sinks[0]);
 		auto main_logger = std::make_shared<spdlog::logger>("main", begin(sinks), end(sinks));
 		spdlog::register_logger(console_logger);
@@ -65,18 +65,18 @@ int main(int argc, char* argk[])
 	for (int i = 0; i < num; i++)
 	{
 		SDL_GetRenderDriverInfo(i, &info);
-		log->info("Driker: {} is {}", i, info.name);
+		log->info("Driver: {} is {}", i, info.name);
 	}
 	CommandManager rlCommands = CommandManager();
 	//					  INPUT DOMAIN				                     COMMAND	    	NAME(uniq)	IS KB	KEYCODE			PRESSED,SHIFT,CTRL,ALT,CAPS	
-	rlCommands.addCommand(magma::INPUT_DOMAIN_DEFAULT, magma::CommandDef(CMD_MOVE_E,		"moke_e",	true ,	SDLK_RIGHT,		true ,false,false,false,false));
-	rlCommands.addCommand(magma::INPUT_DOMAIN_DEFAULT, magma::CommandDef(CMD_MOVE_N,		"moke_n",	true ,	SDLK_UP,		true ,false,false,false,false));	
-	rlCommands.addCommand(magma::INPUT_DOMAIN_DEFAULT, magma::CommandDef(CMD_MOVE_NE,		"moke_ne",	true ,	SDLK_RIGHT,		true ,true ,false,false,false));
-	rlCommands.addCommand(magma::INPUT_DOMAIN_DEFAULT, magma::CommandDef(CMD_MOVE_W,		"moke_w",	true ,	SDLK_LEFT,		true ,false,false,false,false));
-	rlCommands.addCommand(magma::INPUT_DOMAIN_DEFAULT, magma::CommandDef(CMD_MOVE_NW,		"moke_nw",	true ,	SDLK_LEFT,		true ,true ,false,false,false));
-	rlCommands.addCommand(magma::INPUT_DOMAIN_DEFAULT, magma::CommandDef(CMD_MOVE_S,		"moke_s",	true ,	SDLK_DOWN,		true ,false,false,false,false));
-	rlCommands.addCommand(magma::INPUT_DOMAIN_DEFAULT, magma::CommandDef(CMD_MOVE_SE,		"moke_se",	true ,	SDLK_RIGHT,		true ,false,true ,false,false));	
-	rlCommands.addCommand(magma::INPUT_DOMAIN_DEFAULT, magma::CommandDef(CMD_MOVE_SW,		"moke_sw",	true ,	SDLK_LEFT,		true ,false,true ,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_DEFAULT, magma::CommandDef(CMD_MOVE_E,		"move_e",	true ,	SDLK_RIGHT,		true ,false,false,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_DEFAULT, magma::CommandDef(CMD_MOVE_N,		"move_n",	true ,	SDLK_UP,		true ,false,false,false,false));	
+	rlCommands.addCommand(magma::INPUT_DOMAIN_DEFAULT, magma::CommandDef(CMD_MOVE_NE,		"move_ne",	true ,	SDLK_RIGHT,		true ,true ,false,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_DEFAULT, magma::CommandDef(CMD_MOVE_W,		"move_w",	true ,	SDLK_LEFT,		true ,false,false,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_DEFAULT, magma::CommandDef(CMD_MOVE_NW,		"move_nw",	true ,	SDLK_LEFT,		true ,true ,false,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_DEFAULT, magma::CommandDef(CMD_MOVE_S,		"move_s",	true ,	SDLK_DOWN,		true ,false,false,false,false));
+	rlCommands.addCommand(magma::INPUT_DOMAIN_DEFAULT, magma::CommandDef(CMD_MOVE_SE,		"move_se",	true ,	SDLK_RIGHT,		true ,false,true ,false,false));	
+	rlCommands.addCommand(magma::INPUT_DOMAIN_DEFAULT, magma::CommandDef(CMD_MOVE_SW,		"move_sw",	true ,	SDLK_LEFT,		true ,false,true ,false,false));
 
 	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_SPACE_K,		"txt_spc",	true ,	SDLK_SPACE,		true ,false,false,false,false));
 	rlCommands.addCommand(magma::INPUT_DOMAIN_TEXTBOX, magma::CommandDef(CMD_EXCL_K,		"txt_!",	true ,	SDLK_1,			true ,true ,false,false,false));
@@ -270,7 +270,7 @@ int main(int argc, char* argk[])
 		std::string txt;
 		while (rlCommands.getCommand(cmd, name))
 		{
-
+			log->info("Command: {}, {}", (char)cmd, name);
 		}
 
 
